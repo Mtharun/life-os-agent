@@ -8,6 +8,8 @@ const client = new Anthropic({
   dangerouslyAllowBrowser: true
 })
 
+const API = 'https://life-os-agent-backend.onrender.com'
+
 function App() {
 
 //HABIT
@@ -42,7 +44,7 @@ function App() {
   // }
   const addHabit = async () => {
   if (inputValue === '') return
-  const res = await fetch('http://localhost:5000/habits', {
+  const res = await fetch(`${API}/habits`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: inputValue })
@@ -59,7 +61,7 @@ function App() {
   // }
   const addTask = async () => {
   if (taskValue === '') return
-  const res = await fetch('http://localhost:5000/tasks', {
+  const res = await fetch(`${API}/tasks`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: taskValue })
@@ -78,7 +80,7 @@ function App() {
   // }
   const addFinance = async () => {
   if (descValue === '' || amountValue === '') return
-  const res = await fetch('http://localhost:5000/finance', {
+  const res = await fetch(`${API}/finance`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ desc: descValue, amount: Number(amountValue) })
@@ -92,7 +94,7 @@ function App() {
 
   const addLead = async () => {
   if (leadValue === '' || companyValue === '') return
-  const res = await fetch('http://localhost:5000/leads', {
+  const res = await fetch(`${API}/leads`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ lead: leadValue, company: companyValue, status:statusValue })
@@ -129,22 +131,22 @@ setLoading(false)
 
 
 useEffect(() => {
-  fetch('http://localhost:5000/habits')
+  fetch(`${API}/habits`)
     .then(res => res.json())
     .then(data => setHabits(data))
 }, [])
 useEffect(() => {
-  fetch('http://localhost:5000/tasks')
+  fetch(`${API}/tasks`)
     .then(res => res.json())
     .then(data => setTasks(data))
 }, [])
 useEffect(() => {
-  fetch('http://localhost:5000/finance')
+  fetch(`${API}/finance`)
     .then(res => res.json())
     .then(data => setFinances(data))
 }, [])
 useEffect(() => {
-  fetch('http://localhost:5000/leads')
+  fetch(`${API}/leads`)
     .then(res => res.json())
     .then(data => setLeads(data))
 }, [])
