@@ -2,6 +2,7 @@ import { useState,useEffect } from 'react'
 import './App.css'
 import Anthropic from '@anthropic-ai/sdk'
 
+
 const client = new Anthropic({
   apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
   dangerouslyAllowBrowser: true
@@ -34,34 +35,70 @@ function App() {
   const [loading, setLoading] = useState(false)
 
 
-  const addHabit =()=>{
-    if(inputValue === '')return
-    setHabits([...habits, inputValue])
-    setInputValue('')
+  // const addHabit =()=>{
+  //   if(inputValue === '')return
+  //   setHabits([...habits, inputValue])
+  //   setInputValue('')
+  // }
+  const addHabit = async () => {
+  if (inputValue === '') return
+  const res = await fetch('http://localhost:5000/habits', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: inputValue })
+  })
+  const newHabit = await res.json()
+  setHabits([...habits, newHabit])
+  setInputValue('')
   }
 
-  const addTask = () => {
+  // const addTask = () => {
+  // if (taskValue === '') return
+  // setTasks([...tasks, taskValue])
+  // setTaskValue('')
+  // }
+  const addTask = async () => {
   if (taskValue === '') return
-  setTasks([...tasks, taskValue])
+  const res = await fetch('http://localhost:5000/tasks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: taskValue })
+  })
+  const newTask = await res.json()
+  setTasks([...tasks, newTask])
   setTaskValue('')
-  }
+ }
 
 
-  const addFinance = () => {
+  // const addFinance = () => {
+  // if (descValue === '' || amountValue === '') return
+  // setFinances([...finances, { desc: descValue, amount: Number(amountValue) }])
+  // setDescValue('')
+  // setAmountValue('')
+  // }
+  const addFinance = async () => {
   if (descValue === '' || amountValue === '') return
-  setFinances([...finances, { desc: descValue, amount: Number(amountValue) }])
+  const res = await fetch('http://localhost:5000/finance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ desc: descValue, amount: Number(amountValue) })
+  })
+  const newFinance = await res.json()
+  setFinances([...finances, newFinance])
   setDescValue('')
   setAmountValue('')
   }
 
 
-  const addLead = () => {
+  const addLead = async () => {
   if (leadValue === '' || companyValue === '') return
-  setLeads([...leads, { 
-    lead: leadValue, 
-    company: companyValue, 
-    status: statusValue 
-  }])
+  const res = await fetch('http://localhost:5000/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ lead: leadValue, company: companyValue, status:statusValue })
+  })
+  const newLead = await res.json()
+  setLeads([...leads, newLead])
   setLeadValue('')
   setCompanyValue('')
   setStatusValue('New')
@@ -90,6 +127,27 @@ setChatMessages(prev => [...prev, aiMsg])
 setLoading(false)
 }
 
+
+useEffect(() => {
+  fetch('http://localhost:5000/habits')
+    .then(res => res.json())
+    .then(data => setHabits(data))
+}, [])
+useEffect(() => {
+  fetch('http://localhost:5000/tasks')
+    .then(res => res.json())
+    .then(data => setTasks(data))
+}, [])
+useEffect(() => {
+  fetch('http://localhost:5000/finance')
+    .then(res => res.json())
+    .then(data => setFinances(data))
+}, [])
+useEffect(() => {
+  fetch('http://localhost:5000/leads')
+    .then(res => res.json())
+    .then(data => setLeads(data))
+}, [])
   return (
     <>
 
@@ -118,7 +176,7 @@ setLoading(false)
         <ul className="mt-4 space-y-2">
           {habits.map((habit, index) => (
             <li key={index} className="bg-gray-700 rounded-lg p-2">
-              {habit}
+              {habit.name || habit}
             </li>
           ))}
         </ul>
@@ -143,7 +201,7 @@ setLoading(false)
             <ul className="mt-4 space-y-2">
               {tasks.map((task, index) => (
                 <li key={index} className="bg-gray-700 rounded-lg p-2">
-                  {task}
+                  {task.name || task}
                 </li>
               ))}
             </ul>
